@@ -1,0 +1,563 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+          content="Interactive Local Area WebGIS for Madisonville, Kentucky using Leaflet.js.">
+
+    <title>Madisonville Local Area WebGIS | Harsh Vashishth</title>
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet"
+          href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+    <style>
+        /* =====================================
+           1. GLOBAL STYLING
+        ===================================== */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+
+        /* =====================================
+           2. HEADER
+        ===================================== */
+        header {
+            background: #123047;
+            color: white;
+            padding: 17px 25px;
+            border-bottom: 4px solid #16a085;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        header p {
+            margin: 6px 0 0;
+            font-size: 13px;
+            color: #d5e4ed;
+        }
+
+        /* =====================================
+           3. MAIN LAYOUT
+        ===================================== */
+        .container {
+            display: flex;
+            height: calc(100vh - 91px);
+            min-height: 400px;
+        }
+
+        /* =====================================
+           4. SIDEBAR
+        ===================================== */
+        .sidebar {
+            width: 310px;
+            flex-shrink: 0;
+            background: white;
+            padding: 20px;
+            overflow-y: auto;
+            border-right: 1px solid #dbe3eb;
+        }
+
+        .sidebar h2 {
+            font-size: 18px;
+            color: #123047;
+            margin-top: 0;
+        }
+
+        .sidebar h3 {
+            font-size: 15px;
+            margin-top: 22px;
+            color: #176b69;
+        }
+
+        .sidebar p,
+        .sidebar li {
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        .sidebar ul {
+            padding-left: 18px;
+        }
+
+        /* =====================================
+           5. BUTTON
+        ===================================== */
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background: #087e78;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .btn:hover {
+            background: #065f59;
+        }
+
+        .btn:focus-visible {
+            outline: 3px solid #f59e0b;
+            outline-offset: 3px;
+        }
+
+        /* =====================================
+           6. MAP LEGEND
+        ===================================== */
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 13px 0;
+            font-size: 13px;
+        }
+
+        .legend-symbol {
+            display: inline-block;
+            flex-shrink: 0;
+        }
+
+        .point-symbol {
+            width: 14px;
+            height: 14px;
+            background: #e76f51;
+            border: 2px solid white;
+            border-radius: 50%;
+            box-shadow: 0 0 0 1px #e76f51;
+        }
+
+        .route-symbol {
+            width: 27px;
+            height: 0;
+            border-top: 4px solid #2563eb;
+        }
+
+        .polygon-symbol {
+            width: 22px;
+            height: 15px;
+            background: rgba(22, 163, 74, 0.25);
+            border: 2px solid #16a34a;
+        }
+
+        /* =====================================
+           7. MAP
+        ===================================== */
+        #map {
+            flex: 1;
+            min-width: 0;
+            height: 100%;
+        }
+
+        /* =====================================
+           8. COORDINATE DISPLAY
+        ===================================== */
+        .coordinates {
+            background: #eef6f6;
+            border: 1px solid #d0e8e5;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            line-height: 1.6;
+            margin-top: 10px;
+        }
+
+        /* =====================================
+           9. PROJECT INFORMATION
+        ===================================== */
+        .project-note {
+            margin-top: 25px;
+            padding-top: 12px;
+            border-top: 1px solid #e2e8f0;
+            font-size: 12px;
+            color: #64748b;
+            line-height: 1.7;
+        }
+
+        /* =====================================
+           10. RESPONSIVE DESIGN
+        ===================================== */
+        @media (max-width: 700px) {
+            header h1 {
+                font-size: 18px;
+            }
+
+            .container {
+                flex-direction: column;
+                height: auto;
+            }
+
+            .sidebar {
+                width: 100%;
+                max-height: 340px;
+            }
+
+            #map {
+                height: 65vh;
+                min-height: 400px;
+                flex: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- =====================================
+         HEADER
+    ===================================== -->
+    <header>
+        <h1>Madisonville Local Area WebGIS</h1>
+        <p>
+            Interactive Mapping | Leaflet.js |
+            Madisonville, Kentucky
+        </p>
+    </header>
+
+    <!-- =====================================
+         MAIN CONTENT
+    ===================================== -->
+    <div class="container">
+
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+
+            <h2>Project Overview</h2>
+
+            <p>
+                This interactive WebGIS application
+                demonstrates local area mapping in
+                Madisonville, Kentucky using Leaflet,
+                JavaScript, HTML, and CSS.
+            </p>
+
+            <p>
+                Explore sample point locations,
+                a connecting line, and a demonstration
+                study area using multiple basemaps.
+            </p>
+
+            <h3>Map Features</h3>
+
+            <ul>
+                <li>Interactive point features</li>
+                <li>Clickable feature popups</li>
+                <li>Sample connecting route</li>
+                <li>Demonstration study area</li>
+                <li>Three Esri basemaps</li>
+                <li>Layer visibility controls</li>
+            </ul>
+
+            <!-- LEGEND -->
+            <h3>Map Legend</h3>
+
+            <div class="legend-item">
+                <span class="legend-symbol point-symbol"></span>
+                Point Locations
+            </div>
+
+            <div class="legend-item">
+                <span class="legend-symbol route-symbol"></span>
+                Sample Route
+            </div>
+
+            <div class="legend-item">
+                <span class="legend-symbol polygon-symbol"></span>
+                Study Area
+            </div>
+
+            <!-- MAP NAVIGATION -->
+            <h3>Map Navigation</h3>
+
+            <button class="btn"
+                    type="button"
+                    onclick="resetMap()">
+                Zoom to Study Area
+            </button>
+
+            <p>
+                Use the layer control in the upper-right
+                corner to switch basemaps and show
+                or hide features.
+            </p>
+
+            <!-- COORDINATES -->
+            <h3>Live Map Coordinates</h3>
+
+            <div class="coordinates" id="coordinates"
+                 aria-live="off">
+                Move your mouse over the map to
+                display latitude and longitude.
+            </div>
+
+            <!-- PROJECT INFORMATION -->
+            <div class="project-note">
+                <strong>Developed by:</strong><br>
+                Harsh Vashishth<br><br>
+
+                <strong>Technologies:</strong><br>
+                Leaflet.js, JavaScript, HTML, CSS,
+                Esri Basemaps<br><br>
+
+                <em>
+                    All vector features are illustrative
+                    practice geometries, not verified
+                    roads, parcels, or official boundaries.
+                </em>
+            </div>
+
+        </aside>
+
+        <!-- MAP -->
+        <div id="map" role="region"
+             aria-label="Interactive Madisonville WebGIS map"></div>
+
+    </div>
+
+    <!-- =====================================
+         LEAFLET LIBRARY
+    ===================================== -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <script>
+
+        // =====================================
+        // 1. CREATE MAP
+        // =====================================
+
+        var center = [37.3281, -87.4989];
+
+        var map = L.map('map', {
+            center: center,
+            zoom: 13,
+            zoomControl: true
+        });
+
+        // =====================================
+        // 2. CREATE BASEMAPS
+        // =====================================
+
+        var streetMap = L.tileLayer(
+            'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
+            {
+                maxZoom: 19,
+                attribution: 'Tiles &copy; Esri'
+            }
+        );
+
+        var satelliteMap = L.tileLayer(
+            'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+            {
+                maxZoom: 19,
+                attribution: 'Tiles &copy; Esri'
+            }
+        );
+
+        var topoMap = L.tileLayer(
+            'https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}',
+            {
+                maxZoom: 19,
+                attribution: 'Tiles &copy; Esri'
+            }
+        );
+
+        // Default basemap
+        streetMap.addTo(map);
+
+        // =====================================
+        // 3. POINT SYMBOL STYLE
+        // =====================================
+
+        var pointStyle = {
+            radius: 8,
+            fillColor: '#e76f51',
+            color: '#ffffff',
+            weight: 2,
+            opacity: 1,
+            fillOpacity: 0.95
+        };
+
+        // =====================================
+        // 4. POINT FEATURES
+        // =====================================
+
+        var madisonvilleMarker = L.circleMarker(
+            [37.3281, -87.4989],
+            pointStyle
+        ).bindPopup(
+            '<b>Madisonville, Kentucky</b><br>' +
+            'Local Area WebGIS Project<br>' +
+            'Feature Type: Point'
+        );
+
+        var secondMarker = L.circleMarker(
+            [37.3400, -87.4900],
+            pointStyle
+        ).bindPopup(
+            '<b>Sample Location</b><br>' +
+            'Demonstration point north of central Madisonville.'
+        );
+
+        var pointLayer = L.layerGroup([
+            madisonvilleMarker,
+            secondMarker
+        ]);
+
+        // =====================================
+        // 5. LINE FEATURE
+        // =====================================
+
+        var route = L.polyline([
+            [37.3281, -87.4989],
+            [37.3330, -87.4950],
+            [37.3400, -87.4900]
+        ], {
+            color: '#2563eb',
+            weight: 4,
+            opacity: 0.9
+        }).bindPopup(
+            '<b>Sample Connecting Route</b><br>' +
+            'Illustrative polyline, not a verified road route.'
+        );
+
+        var routeLayer = L.layerGroup([route]);
+
+        // =====================================
+        // 6. POLYGON FEATURE
+        // =====================================
+
+        var studyArea = L.polygon([
+            [37.3230, -87.5100],
+            [37.3230, -87.5000],
+            [37.3300, -87.4960],
+            [37.3350, -87.5050],
+            [37.3300, -87.5130]
+        ], {
+            color: '#16a34a',
+            weight: 3,
+            fillColor: '#22c55e',
+            fillOpacity: 0.22
+        }).bindPopup(
+            '<b>Demonstration Study Area</b><br>' +
+            'Illustrative polygon for Leaflet WebGIS practice.'
+        );
+
+        var studyAreaLayer = L.layerGroup([
+            studyArea
+        ]);
+
+        // =====================================
+        // 7. ADD OVERLAY LAYERS
+        // =====================================
+
+        pointLayer.addTo(map);
+        routeLayer.addTo(map);
+        studyAreaLayer.addTo(map);
+
+        // =====================================
+        // 8. BASEMAP COLLECTION
+        // =====================================
+
+        var baseMaps = {
+            'Street Map': streetMap,
+            'Satellite Imagery': satelliteMap,
+            'Topographic Map': topoMap
+        };
+
+        // =====================================
+        // 9. OVERLAY COLLECTION
+        // =====================================
+
+        var overlayMaps = {
+            'Point Locations': pointLayer,
+            'Sample Route': routeLayer,
+            'Study Area': studyAreaLayer
+        };
+
+        // =====================================
+        // 10. LAYER CONTROL
+        // =====================================
+
+        L.control.layers(
+            baseMaps,
+            overlayMaps,
+            {
+                collapsed: false,
+                position: 'topright'
+            }
+        ).addTo(map);
+
+        // =====================================
+        // 11. SCALE BAR
+        // =====================================
+
+        L.control.scale({
+            position: 'bottomleft',
+            metric: true,
+            imperial: true
+        }).addTo(map);
+
+        // =====================================
+        // 12. LIVE COORDINATES
+        // =====================================
+
+        map.on('mousemove', function(event) {
+
+            var lat = event.latlng.lat.toFixed(5);
+            var lng = event.latlng.lng.toFixed(5);
+
+            document.getElementById('coordinates').innerHTML =
+                '<strong>Latitude:</strong> ' + lat +
+                '<br><strong>Longitude:</strong> ' + lng;
+        });
+
+        // =====================================
+        // 13. ZOOM TO STUDY AREA
+        // =====================================
+
+        function resetMap() {
+
+            var allFeatures = L.featureGroup([
+                madisonvilleMarker,
+                secondMarker,
+                route,
+                studyArea
+            ]);
+
+            map.fitBounds(
+                allFeatures.getBounds(),
+                {
+                    padding: [40, 40],
+                    maxZoom: 14
+                }
+            );
+        }
+
+        // =====================================
+        // 14. APPLICATION READY
+        // =====================================
+
+        map.whenReady(function() {
+            console.log(
+                'Madisonville Local Area WebGIS loaded successfully.'
+            );
+        });
+
+    </script>
+
+</body>
+</html>
