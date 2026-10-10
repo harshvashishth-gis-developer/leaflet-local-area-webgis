@@ -50,7 +50,7 @@ The primary objectives of this project were to:
 
 ## 🗺️ Final WebGIS Application
 
-![Final Madisonville WebGIS](/Final_Madisonville_WebGIS.png)
+![Final Madisonville WebGIS](Final_Madisonville_WebGIS.png)
 
 The final application contains a custom-designed header, information sidebar, interactive map, map legend, basemap selector, overlay controls, and navigation tools.
 
@@ -129,7 +129,7 @@ The project was developed over five sequential learning stages.
 
 **Outcome:** Created the first interactive Leaflet web map centered on Madisonville, Kentucky.
 
-![Day 1 - First Leaflet Map](/Day1_First_Leaflet_Map.png)
+![Day 1 - First Leaflet Map](Day1_First_Leaflet_Map.png)
 
 ### Day 2 — October 6, 2026
 
@@ -148,11 +148,11 @@ The project was developed over five sequential learning stages.
 
 **Point Marker and Popup**
 
-![Day 2 - Point Marker Popup](/Day2_Point_Marker_Popup.png)
+![Day 2 - Point Marker Popup](Day2_Point_Marker_Popup.png)
 
 **Point, Line, and Polygon Features**
 
-![Day 2 - Vector Features](/Day2_Vector_Features.png)
+![Day 2 - Vector Features](Day2_Vector_Features.png)
 
 ### Day 3 — October 7, 2026
 
@@ -169,7 +169,7 @@ The project was developed over five sequential learning stages.
 
 **Outcome:** Implemented interactive basemap selection and layer visibility controls.
 
-![Day 3 - Layers and Basemaps](/Day3_Layers_Basemaps.png)
+![Day 3 - Layers and Basemaps](Day3_Layers_Basemaps.png)
 
 ### Day 4 — October 8, 2026
 
